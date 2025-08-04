@@ -43,7 +43,7 @@ if (!isset($_SESSION['usuario'])) {
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Productto</h1>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Producto</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
             <div class="modal-body">
@@ -127,7 +127,7 @@ if (!isset($_SESSION['usuario'])) {
                 var tabla = $('#productos').DataTable();
                 var data =tabla.row($(this).parents('tr')).data()
                 var id = data ['id'];
-                
+
                 var datos = new FormData();
                 datos.append('id',id)
                 datos.append('accion','eliminar');
