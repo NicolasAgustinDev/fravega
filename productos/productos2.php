@@ -103,7 +103,11 @@ if (!isset($_SESSION['usuario'])) {
                 columns: [
                     { data: 'id' },
                     { data: 'nombre' },
-                    { data: 'precio' },
+                    { data: 'precio',
+                      render:function(data,type,row){
+                        return parseInt(data).toLocaleString('es-CL');
+                      }
+                    },
                     { data: 'cantidad' },
                     {
                         data:null,
@@ -184,6 +188,10 @@ if (!isset($_SESSION['usuario'])) {
                         datos.append('id',id);
                         datos.append('accion',accion);
 
+                        if (nombre === '' || precio === '' || cantidad === '') {
+                            alert('Por favor, completa todos los campos.');
+                            return;
+                        }
                         $.ajax({
                             url: "../ajax/productos.ajax.php",
                             method: "POST",
