@@ -23,6 +23,64 @@ if (!isset($_SESSION['usuario'])) {
 <body>
     <?php include '../templates/layout.html' ?>
     <h1 class="mt-4">Empleados</h1>
+    <div class="btn-agregar-producto">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#miModal">Agregar Empleado</button>
+    </div>
+    <div>
+        <table id="empleados" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Puesto</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <!-- MODAL -->
+    <div class="modal fade" id="miModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar Empleado</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            <div class="modal-body">
+                <div>
+                    <form>
+                        <div>
+                            <input type="hidden" id="id" name="id">
+                            <div class="mb-3">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" id="nombre" name="nombre" placeholder="Ingrese un Nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="apellido">Apellido</label>
+                                <input type="text" id="apellido" name="apellido" placeholder="Ingrese un apellido" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dni">DNI</label>
+                                <input type="number" id="dni" name="dni" placeholder="Ingrese un DNI" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="puesto">Puesto</label>
+                                <input type="text" id="puesto" name="puesto" placeholder="Ingrese una Puesto" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnguardar">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <?php include '../templates/footer.html' ?>
@@ -35,5 +93,42 @@ if (!isset($_SESSION['usuario'])) {
     <script src="../js/scripts.js"></script>
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var accion = "";
+            $('#empleados').DataTable({
+                dom: 'Bfrtip',
+                language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json'
+                },
+                ordering: false,
+                info: false,
+                responsive: true,
+                ajax:{
+                    url:'../ajax/empleados.ajax.php',
+                    dataSrc: ''
+                },
+                columns:[
+                    {data : 'id'},
+                    {data : 'nombre'},
+                    {data : 'apellido'},
+                    {data : 'dni'},
+                    {data : 'puesto'},
+                    {
+                        data : 'null',
+                        render:function(data,type,row){
+                            return `<button class="btn btn-principal btneditar" data-bs-target="#miModal" data-bs-toggle="modal">
+                            <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button class ="btn btn-danger btneliminar">
+                            <i class="fa-solid fa-trash"></i>
+                            </button>
+                            `
+                        }
+                    }
+                ]
+            })
+        })
+    </script>
 </body>
 </html>

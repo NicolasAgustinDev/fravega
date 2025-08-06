@@ -31,6 +31,20 @@ class modeloproductos {
             echo "El producto no se pudo eliminar";
         }
     }
+
+    static public function mdlmodificarproducto($id,$nombre,$precio,$cantidad){
+        $st = conexion::conectar() -> prepare("UPDATE productos SET nombre=:nombre ,precio=:precio ,cantidad=:cantidad WHERE id=:id");
+        $st -> bindParam(":id",$id,PDO::PARAM_INT);
+        $st -> bindParam(":nombre",$nombre,PDO::PARAM_STR);
+        $st -> bindParam(":precio",$precio,PDO::PARAM_INT);
+        $st -> bindParam(":cantidad",$cantidad,PDO::PARAM_INT);
+
+        if($st->execute()){
+            echo "El producto se registro correctamente";
+        }else{
+            echo "El producto no se pudo registrar";
+        }
+    }
 }
 
 

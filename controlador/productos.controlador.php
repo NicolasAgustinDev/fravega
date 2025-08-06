@@ -15,6 +15,10 @@ class controladorproductos{
         $respuesta = modeloproductos::mdleliminarproducto($id);
         return $respuesta;
     }
-    
+    static public function ctrmodificarproducto($id,$nombre,$precio,$cantidad){
+        $respuesta = modeloproductos::mdlmodificarproducto($id,$nombre,$precio,$cantidad);
+        return $respuesta;
+    }
+
 }
 ?>

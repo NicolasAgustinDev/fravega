@@ -22,6 +22,11 @@ class ajaxproductos {
         $respuesta = controladorproductos::ctreliminarproducto($this -> id);
         echo json_encode($respuesta);
     }
+    public function modificarproductos(){
+        $respuesta = controladorproductos::ctrmodificarproducto($this -> id,$this -> nombre,$this -> precio,$this -> cantidad);
+        echo json_encode($respuesta);
+    }
+
 }
 if(!isset($_POST["accion"])){
     $respuesta = new ajaxproductos();
@@ -38,6 +43,14 @@ if(!isset($_POST["accion"])){
         $eliminar = new ajaxproductos();
         $eliminar -> id =$_POST["id"];
         $eliminar -> eliminarproductos();
+    }
+    if($_POST["accion"] == "modificar"){
+        $modificar = new ajaxproductos();
+        $modificar -> id =$_POST["id"];
+        $modificar -> nombre =$_POST["nombre"];
+        $modificar -> precio =$_POST["precio"];
+        $modificar -> cantidad =$_POST["cantidad"];
+        $modificar -> modificarproductos();
     }
 
 }

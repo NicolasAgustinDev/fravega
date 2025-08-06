@@ -127,6 +127,19 @@ if (!isset($_SESSION['usuario'])) {
                 accion = "registrar";
             })
 
+            $('#productos tbody').on('click','.btneditar',function(){
+                var tabla = $('#productos').DataTable();
+                var data =tabla.row($(this).parents('tr')).data()
+                accion = "modificar";
+
+                $("#id").val(data["id"]);
+                $("#nombre").val(data["nombre"]);
+                $("#precio").val(data["precio"]);
+                $("#cantidad").val(data["cantidad"]);
+            })
+
+
+
             $('#productos tbody').on('click','.btneliminar',function(){
                 var tabla = $('#productos').DataTable();
                 var data =tabla.row($(this).parents('tr')).data()
