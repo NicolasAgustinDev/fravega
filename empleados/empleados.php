@@ -67,7 +67,7 @@ if (!isset($_SESSION['usuario'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="puesto">Puesto</label>
-                                <input type="text" id="puesto" name="puesto" placeholder="Ingrese una Puesto" required>
+                                <select id="puesto" name="puesto" class="form-control" required></select>
                             </div>
                         </div>
                     </form>
@@ -127,6 +127,70 @@ if (!isset($_SESSION['usuario'])) {
                         }
                     }
                 ]
+            })
+
+            $('#miModal').on('shown.bs.modal',function(){
+                cargarPuestos();
+            })
+
+            function cargarPuestos() {
+                $.ajax({
+                    url: '../ajax/puesto.ajax.php',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        let opciones = '<option value="">Seleccione un puesto</option>';
+                        data.forEach(function(puesto){
+                            opciones += `<option value="${puesto.id_puesto}">${puesto.puesto}</option>`;
+                        });
+                        $('#puesto').html(opciones);
+                    },
+                    error: function() {
+                        console.error('Error al cargar los puestos:', error);
+                        alert('Error al cargar los puestos.');
+                    }
+                });
+            }
+
+
+
+
+            $('.btn-agregar-producto').on('click',function(){
+                accion = "registrar";
+            })
+            //Guardar la informacion desde la ventana modal
+            $('#btnguardar').on('click',function(){
+                var nombre = $("#nombre").val(),
+                    apellido = $("#apellido").val(),
+                    dni = $("#dni").val(),
+                    puesto = $("#puesto").val(),
+                    id = $("#id").val()
+
+                var datos = new FormData();
+                datos.append('nombre',nombre)
+                datos.append('apellido',apellido);
+                datos.append('dni',dni);
+                datos.append('puesto',puesto);
+                datos.append('id',id);
+                datos.append('accion',accion);
+                $.ajax({
+                    url: "../ajax/empleados.ajax.php",
+                    method: "POST",
+                    data:datos,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    success:function(respuesta){
+                        //console.log(respuesta);
+                        document.activeElement.blur();
+                        $("#miModal").modal('hide');
+                        $('#empleados').DataTable().ajax.reload();
+                        $("#nombre").val(""),
+                        $("#apellido").val(""),
+                        $("#dni").val("");
+                        $("#puesto").val("");
+                    }
+                })
             })
         })
     </script>
