@@ -133,7 +133,7 @@ if (!isset($_SESSION['usuario'])) {
                 cargarPuestos();
             })
 
-            function cargarPuestos() {
+            function cargarPuestos(){
                 $.ajax({
                     url: '../ajax/puesto.ajax.php',
                     method: 'GET',
@@ -158,39 +158,108 @@ if (!isset($_SESSION['usuario'])) {
             $('.btn-agregar-producto').on('click',function(){
                 accion = "registrar";
             })
-            //Guardar la informacion desde la ventana modal
-            $('#btnguardar').on('click',function(){
-                var nombre = $("#nombre").val(),
-                    apellido = $("#apellido").val(),
-                    dni = $("#dni").val(),
-                    puesto = $("#puesto").val(),
-                    id = $("#id").val()
+
+            $('#empleados tbody').on('click','.btneditar',function(){
+                var tabla = $('#empleados').DataTable();
+                var data =tabla.row($(this).parents('tr')).data()
+                accion = "modificar";
+
+                $("#id").val(data["id"]);
+                $("#nombre").val(data["nombre"]);
+                $("#apellido").val(data["apellido"]);
+                $("#dni").val(data["dni"]);
+                $("#puesto").val(data["puesto"]);
+            })
+
+            $('#empleados tbody').on('click','.btneliminar',function(){
+                var tabla = $('#empleados').DataTable();
+                var data =tabla.row($(this).parents('tr')).data()
+                var id = data ['id'];
 
                 var datos = new FormData();
-                datos.append('nombre',nombre)
-                datos.append('apellido',apellido);
-                datos.append('dni',dni);
-                datos.append('puesto',puesto);
-                datos.append('id',id);
-                datos.append('accion',accion);
-                $.ajax({
-                    url: "../ajax/empleados.ajax.php",
-                    method: "POST",
-                    data:datos,
-                    cache:false,
-                    contentType: false,
-                    processData: false,
-                    success:function(respuesta){
-                        //console.log(respuesta);
-                        document.activeElement.blur();
-                        $("#miModal").modal('hide');
-                        $('#empleados').DataTable().ajax.reload();
-                        $("#nombre").val(""),
-                        $("#apellido").val(""),
-                        $("#dni").val("");
-                        $("#puesto").val("");
+                datos.append('id',id)
+                datos.append('accion','eliminar');
+
+                Swal.fire({
+                    title: "Confirmacion?",
+                    text: "Estas seguro que deseas eliminar a este empleado!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Si!",
+                    cancelButtonText: "No, cancelar!"
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "../ajax/empleados.ajax.php",
+                            method: "POST",
+                            data:datos,
+                            cache:false,
+                            contentType: false,
+                            processData: false,
+                            success:function(respuesta){
+                                console.log(respuesta);
+                                $('#empleados').DataTable().ajax.reload();
+                            }
+                        })
+                    }else{
+
                     }
-                })
+                });
+            })
+            //Guardar la informacion desde la ventana modal
+            $('#btnguardar').on('click',function(){
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                        var nombre = $("#nombre").val(),
+                            apellido = $("#apellido").val(),
+                            dni = $("#dni").val(),
+                            puesto = $("#puesto").val(),
+                            id = $("#id").val()
+                        var datos = new FormData();
+                        datos.append('nombre',nombre)
+                        datos.append('apellido',apellido);
+                        datos.append('dni',dni);
+                        datos.append('puesto',puesto);
+                        datos.append('id',id);
+                        datos.append('accion',accion);
+
+                        if (nombre === '' || apellido === '' || dni === '') {
+                            alert('Por favor, completa todos los campos.');
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "../ajax/empleados.ajax.php",
+                            method: "POST",
+                            data:datos,
+                            cache:false,
+                            contentType: false,
+                            processData: false,
+                            success:function(respuesta){
+                                console.log(respuesta);
+                                document.activeElement.blur();
+                                $("#miModal").modal('hide');
+                                $('#empleados').DataTable().ajax.reload();
+                                $("#nombre").val(""),
+                                $("#apellido").val(""),
+                                $("#dni").val("");
+                                $("#puesto").val("");
+                            }
+                        })
+                    }else{
+                    }
+                });
             })
         })
     </script>
