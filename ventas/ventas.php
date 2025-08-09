@@ -75,6 +75,12 @@ if (!isset($_SESSION['usuario'])) {
             </tbody>
         </table>
     </div>
+    <div>
+        <h3>
+            Total: $<span id="TotalGeneralMostrar">0</span>
+            <input type="hidden" id="TotalGeneral">
+        </h3>
+    </div>
 
     <div>
         <button type="button" id="guardar" class="btn btn-primary">Guardar</button>
@@ -102,7 +108,8 @@ if (!isset($_SESSION['usuario'])) {
                     const select = $('#empleado');
                     select.append('<option value="">Seleccione un vendedor</option>');
                     data.forEach(function (empleado) {
-                        select.append(`<option value="${empleado.id_empleado}">${empleado.nombre} ${empleado.apellido} </option>`);
+                        select.append(`<option value="${empleado.id}">${empleado.nombre} ${empleado.apellido} </option>`);
+                        console.log($("#empleado").val());
                     });
                 }
             })
@@ -147,8 +154,9 @@ if (!isset($_SESSION['usuario'])) {
                     { data: 'nombre' },
                     {
                         data: 'cantidad',
-                        render: function(data, type, row){
-                            return `<input type="number" class="form-control cantidad-input" value="${data}" min="1" style="width:80px;">`;
+                        render: function(data/*, type, row*/){
+                            return `<input type="number" class="form-control cantidad-input"
+                             value="${data}" min="1" style="width:80px;">`;
                         }
                     },
 
@@ -185,8 +193,15 @@ if (!isset($_SESSION['usuario'])) {
                     if(rowData.nombre === producto.nombre){
                         rowData.cantidad++;
                         rowData.subtotal = rowData.cantidad * rowData.precio;
-                        this.data(rowData).draw(false);
+                        this.data(rowData);
+
+                        // Actualiza subtotal manualmente
+                        let fila = $(this.node());
+                        fila.find('td').eq(3).text(rowData.subtotal.toLocaleString('es-CL'));
+                        // También actualiza el valor del input
+                        fila.find('.cantidad-input').val(rowData.cantidad);
                         encontrado = true;
+                        recalculartotal();
                     }
                 })
 
@@ -198,22 +213,65 @@ if (!isset($_SESSION['usuario'])) {
                         precio: producto.precio,
                         subtotal: producto.precio
                     }).draw();
+                    recalculartotal();
                 }
             })
 
             $('#ventas tbody').on('click','.btneliminar',function(){
                 tablaventas.row($(this).parents('tr')).remove().draw();
+                recalculartotal();
             })
 
             $('#ventas tbody').on('input','.cantidad-input',function(){
                 let fila = $(this).closest('tr');
                 let rowData = tablaventas.row(fila).data();
 
-                let nuevaCantidad = parseInt($(this).val()) || 1;
+                let nuevaCantidad = parseInt($(this).val()) /*|| 1*/;
+
                 rowData.cantidad = nuevaCantidad;
                 rowData.subtotal = rowData.precio * nuevaCantidad;
+                //tablaventas.row(fila).data(rowData);
 
-                tablaventas.row(fila).data(rowData).draw(false);
+                // Actualizar solo la columna del subtotal
+                fila.find('td').eq(3).text(rowData.subtotal.toLocaleString('es-CL'));
+                recalculartotal();
+            })
+            function recalculartotal(){
+                let total = 0;
+                tablaventas.rows().every(function(){
+                    let data = this.data();
+                    let subtotal = parseFloat(data.subtotal);
+                    if(!isNaN(subtotal)){
+                        total += subtotal;
+                    }
+                });
+                $('#TotalGeneralMostrar').text(total.toLocaleString('es-CL'));
+                $('#TotalGeneral').val(total);
+            }
+
+            $('#guardar').on('click',function(){
+                let id_empleado = $("#empleado").val(),
+                    fecha = $("#fecha").val(),
+                    total = $("#TotalGeneral").val()
+                var datos = new FormData();
+                datos.append('id_empleado',id_empleado);
+                datos.append('fecha',fecha);
+                datos.append('total',total);
+                $.ajax({
+                    url: "../ajax/ventas.ajax.php",
+                    method: "POST",
+                    data:datos,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    success:function(respuesta){
+                        $("#empleado").val(""),
+                        $("#fecha").val(""),
+                        console.log($("#TotalGeneral").val(""));
+                        $("#TotalGeneralMostrar").text("0");
+                        tablaventas.clear().draw();
+                    }
+                })
             })
 
 

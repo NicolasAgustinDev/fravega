@@ -210,7 +210,6 @@ if (!isset($_SESSION['usuario'])) {
             })
             //Guardar la informacion desde la ventana modal
             $('#btnguardar').on('click',function(){
-
                 Swal.fire({
                     title: "Are you sure?",
                     text: "You won't be able to revert this!",
