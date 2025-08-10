@@ -22,7 +22,15 @@ class ajaxventas{
         echo json_encode($respuesta);
     }
 }
-if($_POST){
+if(isset($_GET["detalle"]) && $_GET["detalle"] == 1){
+    $guardar = new ajaxventas();
+    $guardar -> id_venta = $_POST["id_venta"];
+    $guardar -> id_producto = $_POST["id_producto"];
+    $guardar -> cantidad = $_POST["cantidad"];
+    $guardar -> precio_unitario = $_POST["precio_unitario"];
+    $guardar -> subtotal = $_POST["subtotal"];
+    $guardar -> agregardetalleventas();
+}else{
     $guardar = new ajaxventas();
     $guardar -> fecha = $_POST["fecha"];
     $guardar -> id_empleado = $_POST["id_empleado"];

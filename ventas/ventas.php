@@ -208,6 +208,7 @@ if (!isset($_SESSION['usuario'])) {
                 //Si no existe lo agregamos
                 if(!encontrado){
                     tablaventas.row.add({
+                        id: producto.id,
                         nombre: producto.nombre,
                         cantidad: 1,
                         precio: producto.precio,
@@ -249,6 +250,8 @@ if (!isset($_SESSION['usuario'])) {
                 $('#TotalGeneral').val(total);
             }
 
+            let detalles = [];
+
             $('#guardar').on('click',function(){
                 let id_empleado = $("#empleado").val(),
                     fecha = $("#fecha").val(),
@@ -257,6 +260,7 @@ if (!isset($_SESSION['usuario'])) {
                 datos.append('id_empleado',id_empleado);
                 datos.append('fecha',fecha);
                 datos.append('total',total);
+                datos.append('detalles',JSON.stringify(detalles));
                 $.ajax({
                     url: "../ajax/ventas.ajax.php",
                     method: "POST",
@@ -264,7 +268,25 @@ if (!isset($_SESSION['usuario'])) {
                     cache:false,
                     contentType: false,
                     processData: false,
-                    success:function(respuesta){
+                    success:function(id_venta){
+                        id_venta = JSON.parse(id_venta);
+                        tablaventas.rows().every(function(){
+                            let row = this.data();
+                            let detalle = new FormData();
+                            detalle.append("id_venta",id_venta);
+                            detalle.append("id_producto",row.id);
+                            detalle.append("cantidad",row.cantidad);
+                            detalle.append("precio_unitario",row.precio);
+                            detalle.append("subtotal",row.subtotal);
+                            $.ajax({
+                                url: "../ajax/ventas.ajax.php?detalle=1",
+                                method: "POST",
+                                data: detalle,
+                                cache: false,
+                                contentType: false,
+                                processData: false
+                            });
+                        });
                         $("#empleado").val(""),
                         $("#fecha").val(""),
                         console.log($("#TotalGeneral").val(""));
@@ -273,8 +295,6 @@ if (!isset($_SESSION['usuario'])) {
                     }
                 })
             })
-
-
         })
     </script>
 </body>
