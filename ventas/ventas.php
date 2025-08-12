@@ -261,6 +261,10 @@ if (!isset($_SESSION['usuario'])) {
                 datos.append('fecha',fecha);
                 datos.append('total',total);
                 datos.append('detalles',JSON.stringify(detalles));
+                if (id_empleado === '' || fecha  === '' || total  === '' || total == 0){
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
                 $.ajax({
                     url: "../ajax/ventas.ajax.php",
                     method: "POST",
@@ -270,6 +274,8 @@ if (!isset($_SESSION['usuario'])) {
                     processData: false,
                     success:function(id_venta){
                         id_venta = JSON.parse(id_venta);
+                        let totalDetalles = tablaventas.rows().count();
+                        let detallesGuardados = 0;
                         tablaventas.rows().every(function(){
                             let row = this.data();
                             let detalle = new FormData();
@@ -284,7 +290,13 @@ if (!isset($_SESSION['usuario'])) {
                                 data: detalle,
                                 cache: false,
                                 contentType: false,
-                                processData: false
+                                processData: false,
+                                success :function(respuesta){
+                                    detallesGuardados++;
+                                    if(detallesGuardados===totalDetalles){
+                                        window.open("factura.php?id_venta=" + encodeURIComponent(id_venta), "_blank");
+                                    }
+                                }
                             });
                         });
                         $("#empleado").val(""),

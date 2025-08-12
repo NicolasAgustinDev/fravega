@@ -237,7 +237,6 @@ if (!isset($_SESSION['usuario'])) {
                             alert('Por favor, completa todos los campos.');
                             return;
                         }
-
                         $.ajax({
                             url: "../ajax/empleados.ajax.php",
                             method: "POST",
