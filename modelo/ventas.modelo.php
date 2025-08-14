@@ -19,7 +19,8 @@ class modeloventas{
     }
 
     static public function mdlagregardetalleventa($id_venta,$id_producto,$cantidad,$precio_unitario,$subtotal){
-        $st= conexion::conectar() ->prepare("INSERT INTO detalle_venta(id_venta,id_producto,cantidad,precio_unitario,subtotal) VALUES(:id_venta,:id_producto,:cantidad,:precio_unitario,:subtotal)");
+        $conexion = conexion::conectar();
+        $st= $conexion -> prepare("INSERT INTO detalle_venta(id_venta,id_producto,cantidad,precio_unitario,subtotal) VALUES(:id_venta,:id_producto,:cantidad,:precio_unitario,:subtotal)");
         $st -> bindParam(":id_venta",$id_venta,PDO::PARAM_INT);
         $st -> bindParam(":id_producto",$id_producto,PDO::PARAM_INT);
         $st -> bindParam(":cantidad",$cantidad,PDO::PARAM_INT);
@@ -28,10 +29,9 @@ class modeloventas{
         
 
         if($st -> execute()){
-            echo "Los detalles de la venta se registraron correctamente";
-
+            echo "Se registro el detalle de la venta correctamente";
         }else{
-            echo "Los detalles de la venta no se registraron ";
+            echo "No se registro correctamente";
         }
     }
 }

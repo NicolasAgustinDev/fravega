@@ -294,7 +294,19 @@ if (!isset($_SESSION['usuario'])) {
                                 success :function(respuesta){
                                     detallesGuardados++;
                                     if(detallesGuardados===totalDetalles){
-                                        window.open("factura.php?id_venta=" + encodeURIComponent(id_venta), "_blank");
+                                        console.log(id_venta);
+                                        let form = $('<form>',{
+                                            action :'factura.php',
+                                            method:'POST',
+                                            target:'_blank',
+                                        }).append($('<input>',{
+                                            type: 'hidden',
+                                            name: 'id_venta',
+                                            value:id_venta
+                                        }));
+                                        $('body').append(form);
+                                        form.submit();
+                                        form.remove();
                                     }
                                 }
                             });
