@@ -40,7 +40,7 @@ $html='
 body { font-family: Arial, sans-serif; font-size: 12px; }
 .header-table { width: 100%; border-bottom: 2px solid #000; margin-bottom: 10px; }
 .header-table td { vertical-align: top; }
-.empresa { font-size: 7px; line-height: 1.0; }
+.empresa { font-size: 5px; line-height: 1.5; }
 .factura-b { text-align: center; border: 2px solid #000; font-size: 28px; font-weight: bold; width: 50px; }
 .titulo-factura { font-size: 16px; font-weight: bold; }
 .cliente-table, .productos { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -56,23 +56,24 @@ body { font-family: Arial, sans-serif; font-size: 12px; }
 
 <table class="header-table">
     <tr>
-        <td><img src="'.$base64.'" width="140"></td>
+        <td><img src="'.$base64.'" width="100"></td>
         <td class="empresa">
-            <strong>Fravega S.A.</strong><br>
+            <strong style="font-size: 16px;">Fravega S.A.</strong><br>
             CUIT: 30-12345678-9<br>
             Dirección:  Hipólito Yrigoyen 48, B1842BZB Monte Grande, Provincia de Buenos Aires, Argentina<br>
             Tel: (123) 456-7890
         </td>
         <td style="text-align:center;">
             <div class="factura-b">B</div>
-            <div class="titulo-factura">FACTURA Nº '.$id_venta.'</div>
-            Fecha: '.$venta['fecha_venta'].date("Y-m-d").'
+            <div class="titulo-factura">FACTURA B Nº '.$id_venta.'</div>
+            <div class="fecha-compra">Fecha: '.$venta['fecha_venta'].'</div>
+            <div class="IIBB">IIBB: 30716743434 </div>
+            <div class="inicio-actividades">Inicio de actividades: 19/3/2015 </div>
+            <div class="razon-social">Razon social: Fravega S.A. </div>
         </td>
     </tr>
 </table>
 
-<h1 style="text-align:center;">Factura N°'.$venta['id_venta'].'</h1>
-<p><strong>Fecha:</strong>'.$venta['fecha_venta'] .'</p>
 <p><strong>Empleado:</strong>'.$venta['Empleado'].' '.$venta['apellido'].'</p>
 <hr>
 <table border="1" width="100%" cellspacing="0" cellpadding="5">
